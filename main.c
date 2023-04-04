@@ -3,25 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 15:05:54 by flauer            #+#    #+#             */
-/*   Updated: 2023/03/31 15:17:34 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/04 13:30:39 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line/get_next_line.h"
 #include <stdio.h>
+#include <fcntl.h>
 
 int	main(void)
 {
+	printf("Buffer size: %d\n", BUFFER_SIZE);
+
+	int file = open("/Users/flauer/Documents/get_next_line/test_input.txt", O_RDONLY);
+
 	char *line;
-	while (1)
+	while ((line = get_next_line(file)))
 	{
-		line = get_next_line(0);
 		printf("got this line: %s", line);
 		fflush(stdout);
-		free(line);
 	}
 	return (0);
 }
