@@ -57,3 +57,20 @@ char	*f_substr(char const *s, unsigned int start, size_t len)
 		f_strlcpy(ret, s + start, len + 1);
 	return (ret);
 }
+
+void	*f_calloc(size_t size)
+{
+	char	*ret;
+	size_t	i;
+
+	i = 0;
+	ret = malloc(size);
+	if (!ret)
+		return (NULL);
+	while (i < size)
+	{
+		ret[i] = 0;
+		i++;
+	}
+	return ((void *) ret);
+}

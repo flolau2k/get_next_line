@@ -18,7 +18,7 @@ int	main(void)
 {
 	printf("Buffer size: %d\n", BUFFER_SIZE);
 
-	int file = open("/Users/flauer/Documents/get_next_line/test_input.txt", O_RDONLY);
+	int file = open("/home/florian/42/get_next_line/test_input.txt", O_RDONLY);
 
 	char *line;
 	while (1)

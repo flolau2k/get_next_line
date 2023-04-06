@@ -43,12 +43,13 @@ int	read_next_buffer_to_state(int fd, char **buf)
 	char	*newbuf;
 
 	len = 0;
+	newbuf = NULL;
 	if (*buf)
 		len = f_strlen(*buf); // len of old buffer
-	newbuf = malloc(sizeof(**buf) * (len + BUFFER_SIZE + 1));
+	newbuf = f_calloc(sizeof(**buf) * (len + BUFFER_SIZE + 1)); // TODO: set to 0!!
 	if (!newbuf)
 		return (-1);
-	newbuf[len + BUFFER_SIZE] = 0; // NULL terminate
+	//newbuf[len + BUFFER_SIZE] = 0; // NULL terminate
 	if (*buf)
 	{
 		f_strlcpy(newbuf, *buf, (len + BUFFER_SIZE + 1)); // copy stuff from existing state to new state
@@ -68,13 +69,19 @@ char	*handle_error(char **buf)
 char	*handle_empty_read(char **buf)
 {
 	char	*ret;
+
+	ret = NULL;
 	if (f_strlen(*buf) == 0)
 	{
 		free(*buf);
 		return (*buf = NULL);
 	}
 	ret = malloc(sizeof(**buf) * (f_strlen(*buf) + 1));
+	if (!ret)
+		return (NULL);
 	f_strlcpy(ret, *buf, f_strlen(*buf) + 1);
+	free(*buf);
+	*buf = NULL;
 	return (ret);
 }
 
@@ -86,6 +93,7 @@ char	*get_next_line(int fd)
 	int			read_status;
 
 	i = -1;
+	ret = NULL;
 	while (fd_state_buf[fd] && fd_state_buf[fd][++i])
 	{
 		if (fd_state_buf[fd][i] == '\n')

@@ -24,5 +24,6 @@ char	*get_next_line(int fd);
 size_t	f_strlcpy(char *dst, const char *src, size_t dstsize);
 char	*f_substr(char const *s, unsigned int start, size_t len);
 size_t	f_strlen(const char *s);
+void	*f_calloc(size_t size);
 
 #endif // !GET_NEXT_LINE_H
