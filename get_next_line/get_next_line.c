@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 09:28:19 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/06 13:08:12 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/06 13:33:16 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ char	*get_next_line(int fd)
 	int			read_status;
 
 	i = -1;
-	// buf = fd_state_buf[fd];
 	while (fd_state_buf[fd] && fd_state_buf[fd][++i])
 	{
 		if (fd_state_buf[fd][i] == '\n')
