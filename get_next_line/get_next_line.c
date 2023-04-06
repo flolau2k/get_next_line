@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 09:28:19 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/06 12:54:16 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/06 13:08:12 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,38 +67,40 @@ char	*handle_error(char **buf)
 
 char	*handle_empty_read(char **buf)
 {
+	char	*ret;
 	if (f_strlen(*buf) == 0)
 	{
 		free(*buf);
 		return (*buf = NULL);
 	}
-	return (*buf);
+	ret = malloc(sizeof(**buf) * (f_strlen(*buf) + 1));
+	f_strlcpy(ret, *buf, f_strlen(*buf) + 1);
+	return (ret);
 }
 
 char	*get_next_line(int fd)
 {
 	static char	*fd_state_buf[FOPEN_MAX];
 	size_t		i;
-	char		*buf;
 	char		*ret;
 	int			read_status;
 
 	i = -1;
-	buf = fd_state_buf[fd];
-	while (buf && buf[++i])
+	// buf = fd_state_buf[fd];
+	while (fd_state_buf[fd] && fd_state_buf[fd][++i])
 	{
-		if (buf[i] == '\n')
+		if (fd_state_buf[fd][i] == '\n')
 		{
-			ret = f_substr(buf, 0, i + 1);
-			if (!handle_state_buffer(&buf, i + 1))
+			ret = f_substr(fd_state_buf[fd], 0, i + 1);
+			if (!handle_state_buffer(&fd_state_buf[fd], i + 1))
 				return (NULL);
 			return (ret);
 		}
 	}
-	read_status = read_next_buffer_to_state(fd, &buf);
+	read_status = read_next_buffer_to_state(fd, &fd_state_buf[fd]);
 	if (read_status < 0)
-		return (handle_error(&buf));
+		return (handle_error(&fd_state_buf[fd]));
 	if (read_status == 0)
-		return (handle_empty_read(&buf));
+		return (handle_empty_read(&fd_state_buf[fd]));
 	return (get_next_line(fd));
 }

@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 15:05:54 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/06 12:30:59 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/06 12:58:58 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ int	main(void)
 	{
 		printf("getting new line...\n");
 		line = get_next_line(file);
+		if (line == NULL)
+			break;
 		printf("got this line: %s", line);
 		fflush(stdout);
 		sleep(1);
