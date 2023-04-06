@@ -5,84 +5,100 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/31 14:36:28 by florian           #+#    #+#             */
-/*   Updated: 2023/04/04 17:38:21 by flauer           ###   ########.fr       */
+/*   Created: 2023/04/06 09:28:19 by flauer            #+#    #+#             */
+/*   Updated: 2023/04/06 12:33:40 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	get_line_len(char *buffer)
+/// @brief allocate a new string, containing everything from start to end, 
+/// freeing the old string.
+/// @param str buffer to handle
+/// @return 
+int	handle_state_buffer(char *buf, size_t start)
 {
-	int	i;
+	size_t	len;
+	char	*temp;
 
-	i = 0;
-	while (i < BUFFER_SIZE && buffer[i])
-	{
-		if (buffer[i] == '\n')
-		{
-			i++;
-			break ;
-		}
-		i++;
-	}
-	return i;
+	len = f_strlen(buf + start);
+	temp = malloc(sizeof(*temp) * (len + 1));
+	if (!temp)
+		return (0);
+	f_strlcpy(temp, (buf + start), (len + 1));
+	free(buf);
+	buf = temp;
+	return (1);
 }
 
-char	*alloc_next_line(char *start, int len)
+/// @brief replacing buf with new newly allocated buffer, and read BUFFER_SIZE
+/// to the end of it.
+/// @param fd file descriptor to read from
+/// @param buf buffer to replace
+/// @return value of read() function.
+int	read_next_buffer_to_state(int fd, char *buf)
 {
-	char	*ret;
+	size_t	len;
 	int		i;
+	char	*newbuf;
 
-	i = 0;
-	ret = malloc(sizeof(*start) * (len + 1));
-	while (start[i] && i < len)
+	len = 0;
+	if (buf)
+		len = f_strlen(buf); // len of old buffer
+	newbuf = malloc(sizeof(*buf) * (len + BUFFER_SIZE + 1));
+	if (!newbuf)
+		return (-1);
+	newbuf[len + BUFFER_SIZE] = 0; // NULL terminate
+	if (buf)
 	{
-		ret[i] = start[i];
-		i++;
+		f_strlcpy(newbuf, buf, (len + BUFFER_SIZE + 1)); // copy stuff from existing state to new state
+		free(buf); // free old state
 	}
-	ret[i] = 0;
-	return ret;
+	buf = newbuf; // set new state in state buffer
+	i = read(fd, buf + len, BUFFER_SIZE); // read BUFFER_SIZE chars to new buffer, starting at len of old buffer
+	return (i);
+}
+char	*handle_error(char *buf)
+{
+	free(buf);
+	buf = NULL;
+	return (NULL);
+}
+
+char	*handle_empty_read(char *buf)
+{
+	if (f_strlen(buf) == 0)
+	{
+		free(buf);
+		return (buf = NULL);
+	}
+	return (buf);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer[OPEN_MAX];
-	static int	curr_line_len = 0;
-	static int	next_line_len = 0;
-	static int	*next_line = NULL;
-	static int	nbytes_read = 0;
+	static char	*fd_state_buf[FOPEN_MAX];
+	size_t		i;
+	char		*buf;
+	char		*ret;
+	int			read_status;
 
-	// free next_line from last call.
-	if (next_line)
+	i = -1;
+	buf = fd_state_buf[fd];
+	while (buf && buf[++i])
 	{
-		free(next_line);
-		next_line = NULL;
+		if (buf[i] == '\n')
+		{
+			ret = f_substr(buf, 0, i + 1);
+			if (!handle_state_buffer(buf, i + 1))
+				return (NULL);
+			return (ret);
+		}
 	}
-
-	// make sure to return what is left in the buffer from last read call.
-	if (nbytes_read)
-	{
-		next_line_len = get_line_len(buffer + curr_line_len);
-		
-	}
-
-	// read from the buffer at max BUFFER_SIZE
-	nbytes_read = read(fd, buffer, BUFFER_SIZE);
-
-	// if nbytes_read is smaller or equal to zero nothing was read.
-	if (nbytes_read <= 0)
-		return NULL;
-	// get length of next line until \n char.
-	curr_line_len = get_line_len(buffer);
-
-	// use the nbytes_read variable now as a counter how many bytes are still in the buffer
-	// and were not yet returned.
-	if (nbytes_read > curr_line_len)
-		nbytes_read -= curr_line_len;
-
-	next_line = alloc_next_line(buffer, curr_line_len);
-	return (next_line);
-
+	read_status = read_next_buffer_to_state(fd, buf);
+	if (read_status < 0)
+		return (handle_error(buf));
+	if (read_status == 0)
+		return (handle_empty_read(buf));
+	return (get_next_line(fd));
 }
-

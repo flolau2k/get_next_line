@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 14:37:53 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/04 17:38:30 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/06 09:24:42 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <limits.h>
+# include <stdio.h>
 # ifndef BUFFER_SIZE
 # define BUFFER_SIZE 80
 # endif

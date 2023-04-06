@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 15:05:54 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/04 13:30:39 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/06 12:30:59 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,13 @@ int	main(void)
 	int file = open("/Users/flauer/Documents/get_next_line/test_input.txt", O_RDONLY);
 
 	char *line;
-	while ((line = get_next_line(file)))
+	while (1)
 	{
+		printf("getting new line...\n");
+		line = get_next_line(file);
 		printf("got this line: %s", line);
 		fflush(stdout);
+		sleep(1);
 	}
 	return (0);
 }
