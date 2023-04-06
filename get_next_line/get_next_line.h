@@ -17,7 +17,7 @@
 # include <limits.h>
 # include <stdio.h>
 # ifndef BUFFER_SIZE
-# define BUFFER_SIZE 80
+#  define BUFFER_SIZE 80
 # endif
 
 char	*get_next_line(int fd);

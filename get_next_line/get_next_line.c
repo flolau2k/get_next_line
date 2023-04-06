@@ -45,20 +45,20 @@ int	read_next_buffer_to_state(int fd, char **buf)
 	len = 0;
 	newbuf = NULL;
 	if (*buf)
-		len = f_strlen(*buf); // len of old buffer
-	newbuf = f_calloc(sizeof(**buf) * (len + BUFFER_SIZE + 1)); // TODO: set to 0!!
+		len = f_strlen(*buf);
+	newbuf = f_calloc(sizeof(**buf) * (len + BUFFER_SIZE + 1));
 	if (!newbuf)
 		return (-1);
-	//newbuf[len + BUFFER_SIZE] = 0; // NULL terminate
 	if (*buf)
 	{
-		f_strlcpy(newbuf, *buf, (len + BUFFER_SIZE + 1)); // copy stuff from existing state to new state
-		free(*buf); // free old state
+		f_strlcpy(newbuf, *buf, (len + BUFFER_SIZE + 1));
+		free(*buf);
 	}
-	*buf = newbuf; // set new state in state buffer
-	i = read(fd, *buf + len, BUFFER_SIZE); // read BUFFER_SIZE chars to new buffer, starting at len of old buffer
+	*buf = newbuf;
+	i = read(fd, *buf + len, BUFFER_SIZE);
 	return (i);
 }
+
 char	*handle_error(char **buf)
 {
 	free(*buf);

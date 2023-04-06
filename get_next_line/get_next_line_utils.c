@@ -48,7 +48,7 @@ char	*f_substr(char const *s, unsigned int start, size_t len)
 	{
 		ret = malloc(1 * sizeof(char));
 		ret[0] = 0;
-		return ret;
+		return (ret);
 	}
 	if (strlen - start < len)
 		len = strlen - start;
