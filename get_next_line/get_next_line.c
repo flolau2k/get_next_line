@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 09:28:19 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/06 12:33:40 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/06 12:54:16 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,18 @@
 /// freeing the old string.
 /// @param str buffer to handle
 /// @return 
-int	handle_state_buffer(char *buf, size_t start)
+int	handle_state_buffer(char **buf, size_t start)
 {
 	size_t	len;
 	char	*temp;
 
-	len = f_strlen(buf + start);
+	len = f_strlen(*buf + start);
 	temp = malloc(sizeof(*temp) * (len + 1));
 	if (!temp)
 		return (0);
-	f_strlcpy(temp, (buf + start), (len + 1));
-	free(buf);
-	buf = temp;
+	f_strlcpy(temp, (*buf + start), (len + 1));
+	free(*buf);
+	*buf = temp;
 	return (1);
 }
 
@@ -36,43 +36,43 @@ int	handle_state_buffer(char *buf, size_t start)
 /// @param fd file descriptor to read from
 /// @param buf buffer to replace
 /// @return value of read() function.
-int	read_next_buffer_to_state(int fd, char *buf)
+int	read_next_buffer_to_state(int fd, char **buf)
 {
 	size_t	len;
 	int		i;
 	char	*newbuf;
 
 	len = 0;
-	if (buf)
-		len = f_strlen(buf); // len of old buffer
-	newbuf = malloc(sizeof(*buf) * (len + BUFFER_SIZE + 1));
+	if (*buf)
+		len = f_strlen(*buf); // len of old buffer
+	newbuf = malloc(sizeof(**buf) * (len + BUFFER_SIZE + 1));
 	if (!newbuf)
 		return (-1);
 	newbuf[len + BUFFER_SIZE] = 0; // NULL terminate
-	if (buf)
+	if (*buf)
 	{
-		f_strlcpy(newbuf, buf, (len + BUFFER_SIZE + 1)); // copy stuff from existing state to new state
-		free(buf); // free old state
+		f_strlcpy(newbuf, *buf, (len + BUFFER_SIZE + 1)); // copy stuff from existing state to new state
+		free(*buf); // free old state
 	}
-	buf = newbuf; // set new state in state buffer
-	i = read(fd, buf + len, BUFFER_SIZE); // read BUFFER_SIZE chars to new buffer, starting at len of old buffer
+	*buf = newbuf; // set new state in state buffer
+	i = read(fd, *buf + len, BUFFER_SIZE); // read BUFFER_SIZE chars to new buffer, starting at len of old buffer
 	return (i);
 }
-char	*handle_error(char *buf)
+char	*handle_error(char **buf)
 {
-	free(buf);
-	buf = NULL;
+	free(*buf);
+	*buf = NULL;
 	return (NULL);
 }
 
-char	*handle_empty_read(char *buf)
+char	*handle_empty_read(char **buf)
 {
-	if (f_strlen(buf) == 0)
+	if (f_strlen(*buf) == 0)
 	{
-		free(buf);
-		return (buf = NULL);
+		free(*buf);
+		return (*buf = NULL);
 	}
-	return (buf);
+	return (*buf);
 }
 
 char	*get_next_line(int fd)
@@ -90,15 +90,15 @@ char	*get_next_line(int fd)
 		if (buf[i] == '\n')
 		{
 			ret = f_substr(buf, 0, i + 1);
-			if (!handle_state_buffer(buf, i + 1))
+			if (!handle_state_buffer(&buf, i + 1))
 				return (NULL);
 			return (ret);
 		}
 	}
-	read_status = read_next_buffer_to_state(fd, buf);
+	read_status = read_next_buffer_to_state(fd, &buf);
 	if (read_status < 0)
-		return (handle_error(buf));
+		return (handle_error(&buf));
 	if (read_status == 0)
-		return (handle_empty_read(buf));
+		return (handle_empty_read(&buf));
 	return (get_next_line(fd));
 }
