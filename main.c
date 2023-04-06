@@ -18,15 +18,18 @@ int	main(void)
 {
 	printf("Buffer size: %d\n", BUFFER_SIZE);
 
-	int file = open("/home/florian/42/get_next_line/test_input.txt", O_RDONLY);
+	//int file = open("/home/florian/42/get_next_line/test_input.txt", O_RDONLY);
 
 	char *line;
 	while (1)
 	{
-		printf("getting new line...\n");
-		line = get_next_line(file);
+		//printf("getting new line...\n");
+		line = get_next_line(-1);
 		if (line == NULL)
+		{
+			printf("Ende!");
 			break;
+		}
 		printf("got this line: %s", line);
 		fflush(stdout);
 		sleep(1);
