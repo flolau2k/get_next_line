@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 # include <unistd.h>
 # include <stdlib.h>
 # include <limits.h>
@@ -26,4 +26,4 @@ char	*f_substr(char const *s, unsigned int start, size_t len);
 size_t	f_strlen(const char *s);
 void	*f_calloc(size_t size);
 
-#endif // !GET_NEXT_LINE_H
+#endif // !GET_NEXT_LINE_BONUS_H
