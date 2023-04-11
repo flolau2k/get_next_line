@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 09:28:19 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/11 10:39:22 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/11 10:55:00 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 /// @brief allocate a new string, containing everything from start to end, 
 /// freeing the old string.
-/// @param str buffer to handle
-/// @return 
-int	handle_state_buffer(char **buf, size_t start)
+/// @param buf pointer to state buffer
+/// @return 1 in case of success, 0 in case of malloc fail.
+static int	handle_state_buffer(char **buf, size_t start)
 {
 	size_t	len;
 	char	*temp;
@@ -35,9 +35,9 @@ int	handle_state_buffer(char **buf, size_t start)
 /// @brief replacing buf with new newly allocated buffer, and read BUFFER_SIZE
 /// to the end of it.
 /// @param fd file descriptor to read from
-/// @param buf buffer to replace
-/// @return value of read() function.
-int	read_next_buffer_to_state(int fd, char **buf)
+/// @param buf pointer to state buffer to read next chunk to.
+/// @return value of read() function, or -1 in case of malloc fail.
+static int	read_next_buffer_to_state(int fd, char **buf)
 {
 	size_t	len;
 	int		i;
@@ -61,14 +61,22 @@ int	read_next_buffer_to_state(int fd, char **buf)
 	return (i);
 }
 
-char	*handle_error(char **buf)
+/// @brief handle error: free buffer and return NULL.
+/// @param buf pointer to state buffer string
+/// @return NULL
+static char	*handle_error(char **buf)
 {
 	free(*buf);
 	*buf = NULL;
 	return (NULL);
 }
 
-char	*handle_empty_read(char **buf)
+/// @brief allocate and return a string with the contents of the state buffer,
+/// after read returns 0 (nothing more to read). if the state buffer is empty,
+/// return NULL. Also free the state buffer and set to 0.
+/// @param buf pointer to state buffer
+/// @return allocated return string.
+static char	*handle_empty_read(char **buf)
 {
 	char	*ret;
 
@@ -88,8 +96,8 @@ char	*handle_empty_read(char **buf)
 }
 
 /// @brief get the next line from the given file descriptor. 
-/// @param fd 
-/// @return 
+/// @param fd file descriptor
+/// @return next line, or NULL if error or nothing more to read.
 char	*get_next_line(int fd)
 {
 	static char	*fd_state_buf;
