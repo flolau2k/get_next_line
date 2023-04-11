@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 09:28:19 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/06 13:33:16 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/11 10:40:53 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 /// @brief allocate a new string, containing everything from start to end, 
 /// freeing the old string.
@@ -90,13 +90,15 @@ char	*handle_empty_read(char **buf)
 /// @return 
 char	*get_next_line(int fd)
 {
-	static char	*fd_state_buf[1024];
+	static char	*fd_state_buf[FOPEN_MAX];
 	size_t		i;
 	char		*ret;
 	int			read_status;
 
 	i = -1;
 	ret = NULL;
+	if (fd < 0 || fd > FOPEN_MAX)
+		return (NULL);
 	while (fd_state_buf[fd] && fd_state_buf[fd][++i])
 	{
 		if (fd_state_buf[fd][i] == '\n')

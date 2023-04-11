@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 09:28:19 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/06 13:33:16 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/11 10:39:22 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	handle_state_buffer(char **buf, size_t start)
 		return (0);
 	f_strlcpy(temp, (*buf + start), (len + 1));
 	free(*buf);
+	*buf = NULL;
 	*buf = temp;
 	return (1);
 }
@@ -53,6 +54,7 @@ int	read_next_buffer_to_state(int fd, char **buf)
 	{
 		f_strlcpy(newbuf, *buf, (len + BUFFER_SIZE + 1));
 		free(*buf);
+		*buf = NULL;
 	}
 	*buf = newbuf;
 	i = read(fd, *buf + len, BUFFER_SIZE);
@@ -90,27 +92,28 @@ char	*handle_empty_read(char **buf)
 /// @return 
 char	*get_next_line(int fd)
 {
-	static char	*fd_state_buf[1024];
+	static char	*fd_state_buf;
 	size_t		i;
 	char		*ret;
 	int			read_status;
 
-	i = -1;
+	i = 0;
 	ret = NULL;
-	while (fd_state_buf[fd] && fd_state_buf[fd][++i])
+	while (fd_state_buf && fd_state_buf[i])
 	{
-		if (fd_state_buf[fd][i] == '\n')
+		if (fd_state_buf[i] == '\n')
 		{
-			ret = f_substr(fd_state_buf[fd], 0, i + 1);
-			if (!handle_state_buffer(&fd_state_buf[fd], i + 1))
+			ret = f_substr(fd_state_buf, 0, i + 1);
+			if (!handle_state_buffer(&fd_state_buf, i + 1))
 				return (NULL);
 			return (ret);
 		}
+		i++;
 	}
-	read_status = read_next_buffer_to_state(fd, &fd_state_buf[fd]);
+	read_status = read_next_buffer_to_state(fd, &fd_state_buf);
 	if (read_status < 0)
-		return (handle_error(&fd_state_buf[fd]));
+		return (handle_error(&fd_state_buf));
 	if (read_status == 0)
-		return (handle_empty_read(&fd_state_buf[fd]));
+		return (handle_empty_read(&fd_state_buf));
 	return (get_next_line(fd));
 }
