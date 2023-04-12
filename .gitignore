@@ -1,2 +1,5 @@
 *.o
 *.out
+*.dSYM
+.vscode/
+.DS_Store

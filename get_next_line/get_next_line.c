@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 09:28:19 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/11 10:55:00 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/12 15:13:33 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,33 +95,100 @@ static char	*handle_empty_read(char **buf)
 	return (ret);
 }
 
-/// @brief get the next line from the given file descriptor. 
-/// @param fd file descriptor
-/// @return next line, or NULL if error or nothing more to read.
-char	*get_next_line(int fd)
+// /// @brief get the next line from the given file descriptor. 
+// /// @param fd file descriptor
+// /// @return next line, or NULL if error or nothing more to read.
+// char	*get_next_line(int fd)
+// {
+// 	static char	*fd_state_buf;
+// 	size_t		i;
+// 	char		*ret;
+// 	int			read_status;
+
+// 	i = 0;
+// 	ret = NULL;
+// 	while (fd_state_buf && fd_state_buf[i])
+// 	{
+// 		if (fd_state_buf[i] == '\n')
+// 		{
+// 			ret = f_substr(fd_state_buf, 0, i + 1);
+// 			if (!handle_state_buffer(&fd_state_buf, i + 1))
+// 				return (NULL);
+// 			return (ret);
+// 		}
+// 		i++;
+// 	}
+// 	read_status = read_next_buffer_to_state(fd, &fd_state_buf);
+// 	if (read_status < 0)
+// 		return (handle_error(&fd_state_buf));
+// 	if (read_status == 0)
+// 		return (handle_empty_read(&fd_state_buf));
+// 	return (get_next_line(fd));
+// }
+
+char	*nl_from_state_buf(char **fd_state_buf)
 {
-	static char	*fd_state_buf;
-	size_t		i;
-	char		*ret;
-	int			read_status;
+	// expect state buf to contain \n char. malloc new string for return and 
+	// handle state buffer cleanup.
+}
+
+int	check_buf(char **buf)
+{
+	size_t	i;
 
 	i = 0;
-	ret = NULL;
-	while (fd_state_buf && fd_state_buf[i])
+	while (*buf && *buf[i])
 	{
-		if (fd_state_buf[i] == '\n')
+		if (*buf[i] == '\n')
+			break ;
+	}
+	return (i);
+}
+
+int	read_recursive(int fd, char **fd_state_buf, size_t size)
+{
+	// read recursively into the stack until a newline char was read.
+	// return the status of read. 
+
+	char	tmp_buf[BUFFER_SIZE + 1];
+	int		read_status;
+	size_t	i;
+	char	*ret_buf;
+
+	i = 0;
+	ret_buf = NULL;
+	read_status = read(fd, tmp_buf, BUFFER_SIZE);
+	if (read_status <= 0)
+		return (read_status);
+	while (tmp_buf[i])
+	{
+		if (tmp_buf[i] == '\n')
 		{
-			ret = f_substr(fd_state_buf, 0, i + 1);
-			if (!handle_state_buffer(&fd_state_buf, i + 1))
-				return (NULL);
-			return (ret);
+			ret_buf = malloc(sizeof(*tmp_buf) * size + BUFFER_SIZE + 1);
+			ret_buf[size + BUFFER_SIZE] = 0;
+			while (i >= 0)
+			{
+				ret_buf[size + BUFFER_SIZE]
+			}
 		}
 		i++;
 	}
-	read_status = read_next_buffer_to_state(fd, &fd_state_buf);
-	if (read_status < 0)
-		return (handle_error(&fd_state_buf));
-	if (read_status == 0)
-		return (handle_empty_read(&fd_state_buf));
+		
+	return (read_recursive(fd, fd_state_buf, size + BUFFER_SIZE));
+}
+
+char	*get_next_line(int fd)
+{
+	static char	*fd_state_buf;
+	char		*tmp_state_buf;
+	char		*ret;
+	int			read_status;
+
+	ret = NULL;
+	if (check_buf(&fd_state_buf))
+		return (nl_from_state_buf(&fd_state_buf));
+	read_status = read_recursive(fd, &fd_state_buf, 0);
+	if (read_status <= 0)
+		return (NULL);
 	return (get_next_line(fd));
 }
