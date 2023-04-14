@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 09:28:19 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/12 15:58:15 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/14 10:43:43 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,15 +139,17 @@
 // 	return (i);
 // }
 
+// expect state buf to contain \n char. malloc new string for return and 
+// handle state buffer cleanup.
 char	*nl_from_state_buf(char **fd_state_buf, size_t size)
 {
-	// expect state buf to contain \n char. malloc new string for return and 
-	// handle state buffer cleanup.
 	char	*ret;
 	size_t	i;
 
 	i = 0;
 	ret = malloc(sizeof(*ret) * (size + 1));
+	if (!ret)
+		return (NULL);
 	ret[size] = 0;
 	while(i < size)
 	{
@@ -165,42 +167,61 @@ char	*nl_from_state_buf(char **fd_state_buf, size_t size)
 	return (ret);
 }
 
-int	read_recursive(int fd, char **fd_state_buf, size_t size)
-{
-	// read recursively into the stack until a newline char was read.
-	// return the status of read. 
 
+bool	handle_state_buffer(char **buf, char **tmp_buf, int n, int i)
+{
+	size_t	k;
+
+	k = 0;
+	
+}
+
+// read recursively into the stack until a newline char was read.
+// return the status of read. 
+/// @brief 
+/// @param fd 
+/// @param fd_state_buf 
+/// @param size size of buffer that is already read
+/// @return 
+char	*read_recursive(int fd, char **fd_state_buf, size_t size)
+{
 	char	tmp_buf[BUFFER_SIZE + 1];
-	int		read_status;
 	size_t	i;
+	size_t	n;
 	char	*ret_buf;
 
 	i = 0;
 	ret_buf = NULL;
-	read_status = read(fd, tmp_buf, BUFFER_SIZE);
-	if (read_status <= 0)
-		return (read_status);
-	while (tmp_buf[i])
+	n = read(fd, tmp_buf, BUFFER_SIZE);
+	if (n < 0)
+		return (NULL);
+	while (i < n)
 	{
 		if (tmp_buf[i] == '\n')
 		{
-			ret_buf = malloc(sizeof(*tmp_buf) * size + BUFFER_SIZE + 1);
-			ret_buf[size + BUFFER_SIZE] = 0;
+			ret_buf = malloc(sizeof(*tmp_buf) * size + i + 1);
+			if (!ret_buf)
+				return (NULL);
+			ret_buf[size + i] = 0;
+			// handle state buffer
 			while (i >= 0)
 			{
-				ret_buf[size + BUFFER_SIZE]
+				ret_buf[size + i] = tmp_buf[i];
+				i--;
+				return (ret_buf);
 			}
 		}
 		i++;
 	}
-		
-	return (read_recursive(fd, fd_state_buf, size + BUFFER_SIZE));
+	ret_buf = read_recursive(fd, fd_state_buf, size + BUFFER_SIZE);
+	ft_strncpy(ret_buf + size, tmp_buf, BUFFER_SIZE); //TODO: protect!
+	return (ret_buf);
 }
 
 char	*get_next_line(int fd)
 {
 	static char	fd_state_buf[BUFFER_SIZE + 1];
-	//char		*tmp_state_buf;
+	char		*tmp_state_buf;
 	size_t		i;
 
 	i = 0;

@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 14:39:52 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/04 10:23:34 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/14 10:33:02 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,21 @@ size_t	f_strlen(const char *s)
 	while (s[ret])
 		ret++;
 	return (ret);
+}
+
+size_t	ft_strncpy(char *dst, const char *src, size_t dstsize)
+{
+	size_t	i;
+
+	i = 0;
+	if (dstsize == 0)
+		return (f_strlen(src));
+	while (i < dstsize && src[i])
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	return (f_strlen(src));
 }
 
 size_t	f_strlcpy(char *dst, const char *src, size_t dstsize)
@@ -73,4 +88,15 @@ void	*f_calloc(size_t size)
 		i++;
 	}
 	return ((void *) ret);
+}
+
+void	ft_bzero(const void *buf, size_t n)
+{
+	unsigned char	*s;
+	size_t			i;
+
+	s = buf;
+	i = 0;
+	while (i < n)
+		s[i] = 0;
 }
