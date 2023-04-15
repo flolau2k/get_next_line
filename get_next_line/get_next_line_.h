@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_stack.h                              :+:      :+:    :+:   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/14 21:23:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/14 21:23:32 by flauer           ###   ########.fr       */
+/*   Created: 2023/03/31 14:37:53 by flauer            #+#    #+#             */
+/*   Updated: 2023/04/14 10:40:39 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_STACK_H
-# define GET_NEXT_LINE_STACK_H
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
 # include <unistd.h>
 # include <stdlib.h>
 # include <limits.h>
@@ -28,4 +28,4 @@ size_t	f_strlen(const char *s);
 void	*f_calloc(size_t size);
 void	ft_bzero(const void *buf, size_t n);
 
-#endif // !GET_NEXT_LINE_STACK_H
+#endif // !GET_NEXT_LINE_H

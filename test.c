@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 15:05:54 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/12 13:15:42 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/15 16:16:06 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,11 @@
 #include <criterion/criterion.h>
 #include <stdio.h>
 #include <fcntl.h>
-#include <limits.h>
+#if __linux__
+# include <linux/limits.h>
+#else
+# include <limits.h>
+#endif
 #include <unistd.h>
 
 char cwd[PATH_MAX];
@@ -97,5 +101,7 @@ Test(gnl_tester, buffer_size)
 	strcat(cwd, "/buf80.txt");
 	cr_log_info("opening file: %s\n", cwd);
 	fd = open(cwd, O_RDONLY);
-	cr_assert(!strcmp("laksjdflkjasdfjlkjasdlfjlkadsjflkjasdlkdfjlasdjfljalskdfjlajsdflkjalskddfjlasdfd", next_line));
+	next_line = get_next_line(fd);
+	cr_assert(next_line);
+	cr_assert(!strcmp("laksjdflkjasdfjlkjasdlfjlkadsjflkjasdlkdfjlasdjfljalskdfjlajsdflkjalskddfjlasdfd\n", next_line));
 }

@@ -3,38 +3,46 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/31 14:39:52 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/14 10:33:02 by flauer           ###   ########.fr       */
+/*   Created: 2023/04/15 12:26:53 by flauer            #+#    #+#             */
+/*   Updated: 2023/04/15 16:17:06 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	f_strlen(const char *s)
-{
-	size_t	ret;
-
-	ret = 0;
-	while (s[ret])
-		ret++;
-	return (ret);
-}
-
-size_t	ft_strncpy(char *dst, const char *src, size_t dstsize)
+void	*f_memcpy(void *dst, const void *src, size_t n)
 {
 	size_t	i;
+	char	*s1;
+	char	*s2;
 
+	if (dst == NULL && src == NULL)
+		return (dst);
 	i = 0;
-	if (dstsize == 0)
-		return (f_strlen(src));
-	while (i < dstsize && src[i])
+	s1 = dst;
+	s2 = (char *) src;
+	while (i < n)
 	{
-		dst[i] = src[i];
+		s1[i] = s2[i];
 		i++;
 	}
-	return (f_strlen(src));
+	return (dst);
+}
+
+void	ft_bzero(const void *buf, size_t n)
+{
+	unsigned char	*s;
+	size_t			i;
+
+	s = (unsigned char *) buf;
+	i = 0;
+	while (i < n)
+	{
+		s[i] = 0;
+		i++;
+	}
 }
 
 size_t	f_strlcpy(char *dst, const char *src, size_t dstsize)
@@ -53,50 +61,12 @@ size_t	f_strlcpy(char *dst, const char *src, size_t dstsize)
 	return (f_strlen(src));
 }
 
-char	*f_substr(char const *s, unsigned int start, size_t len)
+size_t	f_strlen(const char *s)
 {
-	char	*ret;
-	size_t	strlen;
+	size_t	ret;
 
-	strlen = f_strlen(s);
-	if (strlen < start)
-	{
-		ret = malloc(1 * sizeof(char));
-		ret[0] = 0;
-		return (ret);
-	}
-	if (strlen - start < len)
-		len = strlen - start;
-	ret = malloc((len + 1) * sizeof(char));
-	if (ret)
-		f_strlcpy(ret, s + start, len + 1);
+	ret = 0;
+	while (s[ret])
+		ret++;
 	return (ret);
-}
-
-void	*f_calloc(size_t size)
-{
-	char	*ret;
-	size_t	i;
-
-	i = 0;
-	ret = malloc(size);
-	if (!ret)
-		return (NULL);
-	while (i < size)
-	{
-		ret[i] = 0;
-		i++;
-	}
-	return ((void *) ret);
-}
-
-void	ft_bzero(const void *buf, size_t n)
-{
-	unsigned char	*s;
-	size_t			i;
-
-	s = buf;
-	i = 0;
-	while (i < n)
-		s[i] = 0;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 15:05:54 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/12 13:05:40 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/15 16:13:58 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	main(void)
 {
 	printf("Buffer size: %d\n", BUFFER_SIZE);
 
-	int file = open("/Users/flauer/Documents/get_next_line/empty_nl.txt", O_RDONLY);
+	int file = open("/home/florian/42/get_next_line_test/buf80.txt", O_RDONLY);
 
 	char *line;
 	while (1)
