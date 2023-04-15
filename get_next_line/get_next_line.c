@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:25:27 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/15 16:17:02 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/15 19:47:03 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,30 @@ static char	*nl_from_state_buf(char *buf, int end)
 	size_t	rem_len;
 
 	rem_len = 0;
-	result = malloc(sizeof(*buf) * (end + 2));
+	result = malloc(sizeof(*buf) * (end + 1));
 	if (!result)
 		return (NULL);
-	rem_len = f_strlen(buf) - (end + 1);
-	f_strlcpy(result, buf, end + 2);
-	f_memcpy(buf, buf + end + 1, rem_len);
-	ft_bzero(buf + rem_len, end + 1);
+	rem_len = f_strlen(buf) - (end);
+	f_strlcpy(result, buf, end + 1);
+	f_memcpy(buf, buf + end, rem_len);
+	ft_bzero(buf + rem_len, end);
 	return (result);
+}
+
+static char	*nl_from_read_buf(char *result, char *buf, int end)
+{
+	size_t	rem_len;
+	char	*res;
+
+	rem_len = 0;
+	rem_len = f_strlen(result) - (end);
+	f_memcpy(buf, result + end, rem_len);
+	ft_bzero(buf + rem_len, end);
+	res = malloc(sizeof(*res) * (end + 1));
+	f_strlcpy(res, result, end + 1);
+	free (result);
+	result = NULL;
+	return (res);
 }
 
 static int	check_buf(const char *buf)
@@ -34,9 +50,9 @@ static int	check_buf(const char *buf)
 	size_t	len;
 
 	i = 0;
-	len = f_strlen(buf);
 	if (!buf)
 		return (-1);
+	len = f_strlen(buf);
 	while(i < len && buf[i])
 	{
 		if (buf[i] == '\n')
@@ -48,7 +64,7 @@ static int	check_buf(const char *buf)
 
 static char *read_recursive(int fd, size_t *result_size)
 {
-	char	buffer[BUFFER_SIZE];
+	char	buffer[BUFFER_SIZE] = "";
 	char	*result;
 	ssize_t	bytes_read;
 	ssize_t	check;
@@ -92,24 +108,27 @@ static char *read_recursive(int fd, size_t *result_size)
 
 char	*get_next_line(int fd)
 {
-	static char	*buf;
-	size_t		result_size = 0;
+	static char	buf[BUFFER_SIZE];
+	size_t		result_size;
 	size_t		i;
 	char		*result;
 	
 	i = 0;
+	result_size = 0;
 	result = NULL;
-	while (buf && buf[i] && buf[i] != '\n')
+	while (buf[i] && buf[i] != '\n')
 		i++;
-	if (buf && buf[i] == '\n')
-		return (nl_from_state_buf(buf, i));
+	if (buf[i] == '\n')
+		return (nl_from_state_buf(buf, i + 1));
 	result_size = i;
 	result = read_recursive(fd, &result_size);
 	if (!result)
 		return (NULL);
 	f_memcpy(result, buf, i);
-	if (buf)
-		free(buf);
-	buf = result;
-	return (get_next_line(fd));
+	i = 0;
+	while (result[i] && result[i] != '\n')
+		i++;
+	if (result[i] == '\n')
+		return (nl_from_read_buf(result, buf, i + 1));
+	return (nl_from_read_buf(result, buf, i));
 }
