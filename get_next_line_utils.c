@@ -6,30 +6,11 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 12:26:53 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/17 16:01:12 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/17 16:47:47 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-// void	*f_memcpy(void *dst, const void *src, size_t n)
-// {
-// 	size_t	i;
-// 	char	*s1;
-// 	char	*s2;
-
-// 	if (dst == NULL && src == NULL)
-// 		return (dst);
-// 	i = 0;
-// 	s1 = dst;
-// 	s2 = (char *) src;
-// 	while (i < n)
-// 	{
-// 		s1[i] = s2[i];
-// 		i++;
-// 	}
-// 	return (dst);
-// }
 
 void	*ft_memmove(void *dst, const void *src, size_t len)
 {

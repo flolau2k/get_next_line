@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:25:27 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/17 16:05:17 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/17 16:51:19 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,8 +119,6 @@ char	*get_next_line(int fd)
 		ft_bzero(buf, BUFFER_SIZE + 1);
 		return (NULL);
 	}
-	if (!result)
-		return (NULL);
 	ft_memmove(result, buf, i);
 	return (nl_from_read_buf(result, buf));
 }
