@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:23:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/15 16:17:19 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/17 11:35:31 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 80
 # endif
+# define F_ASSERT(x) if (!(x)) return(printf("statement is false!"), NULL);
 
 char	*get_next_line(int fd);
 size_t	f_strlcpy(char *dst, const char *src, size_t dstsize);
@@ -28,5 +29,6 @@ size_t	f_strlen(const char *s);
 void	*f_calloc(size_t size);
 void	ft_bzero(const void *buf, size_t n);
 void	*f_memcpy(void *dst, const void *src, size_t n);
+void	*ft_memmove(void *dst, const void *src, size_t len);
 
 #endif // !GET_NEXT_LINE_H
