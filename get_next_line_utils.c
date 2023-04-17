@@ -5,36 +5,73 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/31 14:39:52 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/17 15:46:58 by flauer           ###   ########.fr       */
+/*   Created: 2023/04/15 12:26:53 by flauer            #+#    #+#             */
+/*   Updated: 2023/04/17 16:01:12 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	f_strlen(const char *s)
-{
-	size_t	ret;
+// void	*f_memcpy(void *dst, const void *src, size_t n)
+// {
+// 	size_t	i;
+// 	char	*s1;
+// 	char	*s2;
 
-	ret = 0;
-	while (s[ret])
-		ret++;
-	return (ret);
+// 	if (dst == NULL && src == NULL)
+// 		return (dst);
+// 	i = 0;
+// 	s1 = dst;
+// 	s2 = (char *) src;
+// 	while (i < n)
+// 	{
+// 		s1[i] = s2[i];
+// 		i++;
+// 	}
+// 	return (dst);
+// }
+
+void	*ft_memmove(void *dst, const void *src, size_t len)
+{
+	unsigned int	i;
+	char			*c_dst;
+	const char		*c_src;
+
+	if (dst == NULL && src == NULL)
+		return (NULL);
+	if (len == 0 || (dst == src))
+		return (dst);
+	c_dst = dst;
+	c_src = src;
+	i = 0;
+	if (c_src < c_dst)
+	{
+		while (len-- > 0)
+			c_dst[len] = c_src[len];
+	}
+	else
+	{
+		while (i < len)
+		{
+			c_dst[i] = c_src[i];
+			i++;
+		}
+	}
+	return (dst);
 }
 
-size_t	ft_strncpy(char *dst, const char *src, size_t dstsize)
+void	ft_bzero(const void *buf, size_t n)
 {
-	size_t	i;
+	unsigned char	*s;
+	size_t			i;
 
+	s = (unsigned char *) buf;
 	i = 0;
-	if (dstsize == 0)
-		return (f_strlen(src));
-	while (i < dstsize && src[i])
+	while (i < n)
 	{
-		dst[i] = src[i];
+		s[i] = 0;
 		i++;
 	}
-	return (f_strlen(src));
 }
 
 size_t	f_strlcpy(char *dst, const char *src, size_t dstsize)
@@ -51,6 +88,16 @@ size_t	f_strlcpy(char *dst, const char *src, size_t dstsize)
 	}
 	dst[i] = '\0';
 	return (f_strlen(src));
+}
+
+size_t	f_strlen(const char *s)
+{
+	size_t	ret;
+
+	ret = 0;
+	while (s[ret])
+		ret++;
+	return (ret);
 }
 
 char	*f_substr(char const *s, unsigned int start, size_t len)
@@ -71,21 +118,4 @@ char	*f_substr(char const *s, unsigned int start, size_t len)
 	if (ret)
 		f_strlcpy(ret, s + start, len + 1);
 	return (ret);
-}
-
-void	*f_calloc(size_t size)
-{
-	char	*ret;
-	size_t	i;
-
-	i = 0;
-	ret = malloc(size);
-	if (!ret)
-		return (NULL);
-	while (i < size)
-	{
-		ret[i] = 0;
-		i++;
-	}
-	return ((void *) ret);
 }
