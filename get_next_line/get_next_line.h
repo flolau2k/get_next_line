@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:23:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/17 11:35:31 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/17 14:20:24 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 80
 # endif
-# define F_ASSERT(x) if (!(x)) return(printf("statement is false!"), NULL);
 
 char	*get_next_line(int fd);
 size_t	f_strlcpy(char *dst, const char *src, size_t dstsize);

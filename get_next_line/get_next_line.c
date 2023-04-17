@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:25:27 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/17 12:47:45 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/17 15:21:01 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,7 @@ static char	*nl_from_read_buf(char *result, char *buf)
 
 static int	check_buf(const char *buf)
 {
-	size_t	i;
-	// size_t	len;
+	int	i;
 
 	i = 0;
 	if (!buf)
@@ -83,48 +82,33 @@ static int	check_buf(const char *buf)
 	return (-1);
 }
 
-static char *read_recursive(int fd, size_t *result_size)
+static bool	read_recursive(int fd, char **result, size_t *result_size)
 {
 	char	buffer[BUFFER_SIZE];
-	char	*result;
 	ssize_t	bytes_read;
 	ssize_t	check;
 	
 	bytes_read = read(fd, buffer, BUFFER_SIZE);
 	check = check_buf(buffer);
 	if (bytes_read < 0 || (bytes_read == 0 && *result_size == 0))
-		return (NULL);
+		return (false);
 	else if (bytes_read == 0 || check >= 0)
 	{
-		// Base case: end of file reached or error occurred
-		// Allocate the result buffer
-		result = malloc(sizeof(*result) * (*result_size + bytes_read + 1));
-		if (!result)
-			return (NULL);
-		result[*result_size + bytes_read] = '\0';
+		*result = malloc(sizeof(**result) * (*result_size + bytes_read + 1));
+		if (!*result)
+			return (false);
+		(*result)[*result_size + bytes_read] = '\0';
 		if (bytes_read)
-			f_memcpy(result + *result_size, buffer, bytes_read);
-		return result;
+			f_memcpy(*result + *result_size, buffer, bytes_read);
+		return true;
 	}
-	else
-	{
-		// Recursive case: read more data
-		// Increase the result size by the number of bytes read
-		*result_size += bytes_read;
-
-		// Call the function recursively
-		result = read_recursive(fd, result_size);
-
-		// Calculate the correct offset for the current buffer
-		size_t buffer_offset = *result_size - bytes_read;
-
-		// Copy the current buffer into the result buffer at the correct offset
-		f_memcpy(result + buffer_offset, buffer, bytes_read);
-
-		*result_size = buffer_offset;
-
-		return result;
-	}
+	*result_size += bytes_read;
+	if (!read_recursive(fd, result, result_size))
+		return (false);
+	size_t buffer_offset = *result_size - bytes_read;
+	f_memcpy(*result + buffer_offset, buffer, bytes_read);
+	*result_size = buffer_offset;
+	return true;
 }
 
 char	*get_next_line(int fd)
@@ -142,14 +126,13 @@ char	*get_next_line(int fd)
 	if (buf[i] == '\n')
 		return (nl_from_state_buf(buf, i));
 	result_size = i;
-	result = read_recursive(fd, &result_size);
+	if (!read_recursive(fd, &result, &result_size))
+	{
+		ft_bzero(buf, BUFFER_SIZE + 1);
+		return (NULL);
+	}
 	if (!result)
 		return (NULL);
 	f_memcpy(result, buf, i);
-	// i = 0;
-	// while (result[i] && result[i] != '\n')
-	// 	i++;
-	// if (result[i] == '\n')
-	// 	return (nl_from_read_buf(result, buf, i + 1));
 	return (nl_from_read_buf(result, buf));
 }

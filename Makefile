@@ -6,14 +6,14 @@
 #    By: flauer <flauer@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/31 14:42:14 by flauer            #+#    #+#              #
-#    Updated: 2023/04/17 12:38:41 by flauer           ###   ########.fr        #
+#    Updated: 2023/04/17 15:07:36 by flauer           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = test.out
 
 CC = gcc
-CFLAGS = -g -Wall -Werror -Wextra -D BUFFER_SIZE=10
+CFLAGS = -g -Wall -Werror -Wextra -D BUFFER_SIZE=1
 
 SRC = get_next_line/get_next_line.c get_next_line/get_next_line_utils.c
 

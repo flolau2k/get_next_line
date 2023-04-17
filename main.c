@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 15:05:54 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/17 12:40:22 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/17 15:06:57 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	main(void)
 {
 	printf("Buffer size: %d\n", BUFFER_SIZE);
 
-	int file = open("/Users/flauer/Documents/test/get_next_line_test/41_no_nl.txt", O_RDONLY);
+	int file = open("/Users/flauer/Documents/test/get_next_line_test/empty_nl.txt", O_RDONLY);
 
 	char *line;
 	while (1)
