@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 09:28:19 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/18 10:59:02 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/18 13:00:31 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,27 +59,25 @@ static int	check_buf(const char *buf)
 
 	i = 0;
 	if (!buf)
-		return (-1);
+		return (0);
 	while (i < BUFFER_SIZE && buf[i])
 	{
 		if (buf[i] == '\n')
-			return (i);
+			return (1);
 		i++;
 	}
-	return (-1);
+	return (0);
 }
 
 static bool	read_recursive(int fd, char **result, size_t *result_size)
 {
 	char	buffer[BUFFER_SIZE];
 	ssize_t	bytes_read;
-	ssize_t	check;
 
 	bytes_read = read(fd, buffer, BUFFER_SIZE);
-	check = check_buf(buffer);
 	if (bytes_read < 0 || (bytes_read == 0 && *result_size == 0))
 		return (false);
-	else if (bytes_read == 0 || check >= 0)
+	else if (bytes_read == 0 || check_buf(buffer))
 	{
 		*result = malloc(sizeof(**result) * (*result_size + bytes_read + 1));
 		if (!*result)
