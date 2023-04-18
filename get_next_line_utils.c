@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 12:26:53 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/17 16:47:47 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/18 10:51:23 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,8 @@ char	*f_substr(char const *s, unsigned int start, size_t len)
 	if (strlen < start)
 	{
 		ret = malloc(1 * sizeof(char));
-		ret[0] = 0;
+		if (ret)
+			ret[0] = 0;
 		return (ret);
 	}
 	if (strlen - start < len)

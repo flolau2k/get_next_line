@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 09:28:19 by flauer            #+#    #+#             */
-/*   Updated: 2023/04/17 16:52:33 by flauer           ###   ########.fr       */
+/*   Updated: 2023/04/18 10:59:02 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,6 @@ static char	*nl_from_read_buf(char *result, char *buf)
 	ft_memmove(buf, result + i, len - i);
 	ft_bzero(buf + len - i, BUFFER_SIZE - (len - i));
 	res = f_substr(result, 0, i);
-	if (!res)
-		return (NULL);
 	free (result);
 	result = NULL;
 	return (res);
@@ -101,7 +99,7 @@ static bool	read_recursive(int fd, char **result, size_t *result_size)
 
 char	*get_next_line(int fd)
 {
-	static char	buf[FOPEN_MAX][BUFFER_SIZE + 1];
+	static char	buf[OPEN_MAX][BUFFER_SIZE + 1];
 	size_t		result_size;
 	size_t		i;
 	char		*result;
@@ -109,7 +107,7 @@ char	*get_next_line(int fd)
 	i = 0;
 	result_size = 0;
 	result = NULL;
-	if (fd > FOPEN_MAX || fd < 0)
+	if (fd > OPEN_MAX || fd < 0)
 		return (NULL);
 	while (buf[fd] && buf[fd][i] && buf[fd][i] != '\n')
 		i++;
